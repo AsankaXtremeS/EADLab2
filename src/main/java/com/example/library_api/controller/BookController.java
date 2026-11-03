@@ -1,9 +1,14 @@
 package com.example.library_api.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import jakarta.validation.Valid;
 import com.example.library_api.model.Book;
 import com.example.library_api.service.BookService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +34,11 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+        @Operation(summary = "Create a book",
+            description = "Adds a book and returns it with its new id.")
+        @ApiResponse(responseCode = "201", description = "Book created")
+        @ApiResponse(responseCode = "400", description = "Invalid input")
+        @PostMapping
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bookService.createBook(book));
@@ -48,5 +57,6 @@ public class BookController {
         return bookService.deleteBook(id)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
-    }
+ }
+ 
 }
